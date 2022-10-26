@@ -224,7 +224,7 @@ namespace LFAST
         if (this->intHandlers.find(key) == this->intHandlers.end())
         {
             char errBuff[100];
-            sprintf(errBuff, "Key not found: [%s][%d]", key, val);
+            sprintf(errBuff, "Key not found: [%s][%d]", key.c_str(), val);
             throw std::runtime_error(errBuff);
         }
         else
@@ -240,7 +240,7 @@ namespace LFAST
         if (this->intHandlers.find(key) == this->intHandlers.end())
         {
             char errBuff[100];
-            sprintf(errBuff, "Key not found: [%s][%d]", key, val);
+            sprintf(errBuff, "Key not found: [%s][%d]", key.c_str(), val);
             throw std::runtime_error(errBuff);
         }
         else
@@ -256,7 +256,7 @@ namespace LFAST
         if (this->intHandlers.find(key) == this->intHandlers.end())
         {
             char errBuff[100];
-            sprintf(errBuff, "Key not found: [%s][%d]", key, val);
+            sprintf(errBuff, "Key not found: [%s][%d]", key.c_str(), val);
             throw std::runtime_error(errBuff);
         }
         else
@@ -272,7 +272,7 @@ namespace LFAST
         if (this->intHandlers.find(key) == this->intHandlers.end())
         {
             char errBuff[100];
-            sprintf(errBuff, "Key not found: [%s][%d]", key, val);
+            sprintf(errBuff, "Key not found: [%s][%d]", key.c_str(), val);
             throw std::runtime_error(errBuff);
         }
         else
@@ -288,7 +288,7 @@ namespace LFAST
         if (this->intHandlers.find(key) == this->intHandlers.end())
         {
             char errBuff[100];
-            sprintf(errBuff, "Key not found: [%s][%d]", key, val);
+            sprintf(errBuff, "Key not found: [%s][%d]", key.c_str(), val);
             throw std::runtime_error(errBuff);
         }
         else
