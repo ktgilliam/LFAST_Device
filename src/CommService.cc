@@ -30,16 +30,16 @@ void LFAST::CommsService::setupClientMessageBuffers(Client *client)
 
 void LFAST::CommsService::defaultMessageHandler(std::string info)
 {
-    Serial2.printf("Unregistered Message: [%s].\r\n", info.c_str());
+    char errMsg[100];
+    sprintf(errMsg, "Unregistered Message: [%s].", info.c_str());
+    throw std::runtime_error(errMsg);
 }
 
 void LFAST::CommsService::errorMessageHandler(CommsMessage &msg)
 {
-    std::stringstream ss;
-    ss << "Invalid Message.";
-    //
-    ss << std::endl;
-    Serial2.println(ss.str().c_str());
+    char errMsg[100];
+    sprintf(errMsg, "Invalid Message: [%s][%s].", msg.getMessageStr().c_str());
+    throw std::runtime_error(errMsg);
 }
 
 bool LFAST::CommsService::checkForNewClients()
