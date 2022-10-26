@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <StreamUtils.h>
 #include <algorithm>
-// #include <string_view>
+#include <stdexcept> // for exception, runtime_error, out_of_range
 
 std::vector<LFAST::ClientConnection> LFAST::CommsService::connections{};
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,16 +30,12 @@ void LFAST::CommsService::setupClientMessageBuffers(Client *client)
 
 void LFAST::CommsService::defaultMessageHandler(std::string info)
 {
-    char errMsg[100];
-    sprintf(errMsg, "Unregistered Message: [%s].", info.c_str());
-    throw std::runtime_error(errMsg);
+    throw std::runtime_error("Unregistered Message: ");
 }
 
 void LFAST::CommsService::errorMessageHandler(CommsMessage &msg)
 {
-    char errMsg[100];
-    sprintf(errMsg, "Invalid Message: [%s][%s].", msg.getMessageStr().c_str());
-    throw std::runtime_error(errMsg);
+    throw std::runtime_error("Invalid Message: ");
 }
 
 bool LFAST::CommsService::checkForNewClients()
@@ -141,6 +137,7 @@ void LFAST::CommsService::processClientData()
     }
     this->activeConnection = nullptr;
 }
+
 void LFAST::CommsService::processMessage(CommsMessage *msg)
 {
     if (msg->hasBeenProcessed())
@@ -148,19 +145,32 @@ void LFAST::CommsService::processMessage(CommsMessage *msg)
         Serial2.println("Something went wrong processing messages.");
         return;
     }
-    
+
     StaticJsonDocument<JSON_PROGMEM_SIZE> &doc = msg->deserialize();
     JsonObject msgRoot = doc.as<JsonObject>();
     JsonObject msgObject = msgRoot["MountMessage"];
     // Test if parsing succeeds.
     for (JsonPair kvp : msgObject)
     {
-        this->callMessageHandler(kvp);
+        try
+        {
+            this->callMessageHandler(kvp);
+        }
+        catch (const std::runtime_error &e)
+        {
+            std::stringstream ss;
+            ss << "Error processing message: " << e.what(); 
+            throw std::runtime_error(ss.str());
+        }
+        catch (...)
+        {
+            throw std::runtime_error("Error processing message.");
+        }
     }
     msg->setProcessedFlag();
 }
 
-bool LFAST::CommsService::callMessageHandler(JsonPair kvp)
+void LFAST::CommsService::callMessageHandler(JsonPair kvp)
 {
     bool handlerFound = true;
     auto keyStr = std::string(kvp.key().c_str());
